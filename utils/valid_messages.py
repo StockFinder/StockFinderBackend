@@ -20,7 +20,7 @@ def password_reset_succeded(email, telegram_id=None):
     return logger.info(f"Se ha cambiado la contraseña correctamente: {email}")
 
 
-def seding_code(telegram_id=None, email=None):
+def sending_code(telegram_id=None, email=None):
     if telegram_id:
         return logger.info(f"Se le va a enviar el código de Telegram al usuario con ID: {telegram_id}")
     return logger.info(f"Se le va a enviar el código de correo a: {email}")

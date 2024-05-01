@@ -103,13 +103,13 @@ def generate_code():
         except:
             return generate_error_data(errors.PARAM_NOT_VALID, user_ip=user_data["user_ip"]), HTTPStatus.UNAUTHORIZED
 
-        session = Session()
-        user_found = session.query(User).filter(User.email == email).first()
-        if user_found:
-            session.close()
-            return generate_error_data(errors.USER_EXISTS, user_ip=user_data["user_ip"]), HTTPStatus.UNAUTHORIZED
-
-        valid_messages.seding_code(email=email)
+        # session = Session()
+        # user_found = session.query(User).filter(User.email == email).first()
+        # if user_found:
+        #     session.close()
+        #     return generate_error_data(errors.USER_EXISTS, user_ip=user_data["user_ip"]), HTTPStatus.UNAUTHORIZED
+        # session.close()
+        valid_messages.sending_code(email=email)
         try:
             auth.set_verification_code(mail.send_code(email), email)
         except:
@@ -131,7 +131,7 @@ def generate_code():
                 return generate_error_data(errors.USER_EXISTS, user_ip=user_data["user_ip"]), HTTPStatus.UNAUTHORIZED
 
         session.close()
-        valid_messages.seding_code(telegram_id=telegram_id)
+        valid_messages.sending_code(telegram_id=telegram_id)
         try:
             auth.set_verification_code(bot_code.send_code(telegram_id), telegram_id)
         except:

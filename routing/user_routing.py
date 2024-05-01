@@ -155,7 +155,7 @@ def check_user():
         return data, status
     user_data = data
 
-    email_validation, is_email_validated = is_email_valid(["user_data.email"])
+    email_validation, is_email_validated = is_email_valid(user_data["email"])
     if not is_email_validated:
         return generate_error_data(email_validation, user_ip=user_data["user_ip"]), HTTPStatus.UNAUTHORIZED
 
