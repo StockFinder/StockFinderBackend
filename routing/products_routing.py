@@ -1,13 +1,6 @@
-import datetime
 import logging
-import os
-import ujson
-import warnings
-
-import pandas as pd
 import psycopg2
 import psycopg2.extras
-import pytz
 import utils.error_messages as errors
 import utils.valid_messages as valid_messages
 from database.db_connection import sql_connection
@@ -36,7 +29,7 @@ def get_manufacturer(manufacturer):
 
     query = f"""
                 SELECT
-                json_agg(json_build_object('name', p.name, 'price', p.price, 'url', p.url, 'image', p.image)) AS products_data
+                json_agg(json_build_object('name', p.name, 'price', p.price, 'url', p.url, 'image', p.image, 'shop', p.shop_name)) AS products_data
                 FROM products p
                 WHERE p.brand = '{manufacturer}'
             """
