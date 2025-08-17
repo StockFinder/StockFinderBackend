@@ -3,7 +3,10 @@ import psycopg2
 import psycopg2.extras
 import utils.error_messages as errors
 import utils.valid_messages as valid_messages
+import utils.tools as tools
+
 from database.db_connection import sql_connection
+from dateutil import parser
 from flask import Blueprint
 
 
@@ -29,9 +32,9 @@ def get_manufacturer(manufacturer):
 
     query = f"""
                 SELECT
-                json_agg(json_build_object('name', p.name, 'price', p.price, 'url', p.url, 'image', p.image, 'shop', p.shop_name)) AS products_data
+                json_agg(json_build_object('name', p.name, 'price', p.price, 'url', p.url, 'image', p.image, 'shop', p.shop_name, 'last_update', p.updated_at)) AS products_data
                 FROM products p
-                WHERE p.brand = '{manufacturer}'
+                WHERE p.brand = '{manufacturer}' AND p.updated_at >= NOW() - INTERVAL '3 days';
             """
 
     connection = sql_connection()
@@ -39,6 +42,12 @@ def get_manufacturer(manufacturer):
     cursor.execute(query)
     product_dict = dict(cursor.fetchone())
     connection.close()
+
+    products = product_dict.get("products_data", [])
+    for p in products:
+      if p.get('last_update', False):
+          dt = parser.isoparse(p["last_update"])
+          p["last_update"] = tools.humanize_last_update(dt)
 
     valid_messages.petition_completed('products_routing')
     return product_dict
